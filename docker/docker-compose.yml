@@ -1,0 +1,33 @@
+# Bring up the A/B inference server (and optionally a local MLflow) in one step.
+#
+#   docker compose -f docker/docker-compose.yml up serve
+services:
+  serve:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.serve
+    ports: ["8000:8000"]
+    environment:
+      BASE_MODEL: ${BASE_MODEL:-mistralai/Mistral-7B-Instruct-v0.3}
+      LOAD_IN_4BIT: ${LOAD_IN_4BIT:-1}
+      DEVICE: ${DEVICE:-auto}
+    volumes:
+      - ../artifacts/release/adapter:/app/adapter:ro
+      - hf-cache:/app/.cache/huggingface
+    deploy:
+      resources:
+        reservations:
+          devices: [{driver: nvidia, count: 1, capabilities: [gpu]}]
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.14.1
+    profiles: ["tracking"]      # opt in: docker compose --profile tracking up
+    ports: ["5000:5000"]
+    command: mlflow server --host 0.0.0.0 --port 5000
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --default-artifact-root /mlflow/artifacts
+    volumes: [mlflow-data:/mlflow]
+
+volumes:
+  hf-cache:
+  mlflow-data:

@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coderefine"
+version = "0.1.0"
+description = "LoRA fine-tuning pipeline for automated code refinement from review comments"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[project.scripts]
+coderefine = "coderefine.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+coderefine = ["assets/*.json", "assets/*.jsonl"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning", "ignore::FutureWarning"]

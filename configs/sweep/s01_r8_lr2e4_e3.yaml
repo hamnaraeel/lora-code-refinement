@@ -1,0 +1,5 @@
+# Sweep arm 1 — low rank. Tests whether 16 is more capacity than the task needs.
+extends: ../qlora_mistral7b.yaml
+name: sweep-r8-lr2e4-e3
+lora: {r: 8, alpha: 16}
+train: {learning_rate: 2.0e-4, num_epochs: 3}

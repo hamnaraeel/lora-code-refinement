@@ -1,0 +1,6 @@
+# Sweep arm 7 — five epochs. Tests how hard early stopping has to work on a
+# 2,000-example dataset before validation loss turns.
+extends: ../qlora_mistral7b.yaml
+name: sweep-r16-lr2e4-e5
+lora: {r: 16, alpha: 32}
+train: {learning_rate: 2.0e-4, num_epochs: 5}

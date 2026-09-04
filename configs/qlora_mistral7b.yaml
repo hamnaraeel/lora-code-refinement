@@ -1,0 +1,15 @@
+# The headline run: Mistral-7B-Instruct with 4-bit NF4 QLoRA.
+# Fits in ~10 GB of VRAM, so it trains on a single T4/A10/3090 or a free Colab GPU.
+extends: base.yaml
+name: qlora-mistral7b-r16
+base_model: mistralai/Mistral-7B-Instruct-v0.3
+quant:
+  load_in_4bit: true
+train:
+  # Halved per-device batch with doubled accumulation keeps the effective batch
+  # at 16 while fitting a 7B model plus activations into a 16 GB card.
+  per_device_batch_size: 2
+  gradient_accumulation_steps: 8
+notes: >-
+  Primary configuration. 4-bit NF4 base weights with bf16 compute; LoRA adapters
+  stay in bf16 and are the only trainable parameters.

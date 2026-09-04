@@ -1,0 +1,27 @@
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+*.venv/
+venv/
+
+# Environment
+.env
+
+# Large raw datasets / archives (too big for GitHub, keep out of git)
+Code_Refinement/
+Code_Refinement.zip
+
+# Training outputs and model artifacts (generated, not source)
+artifacts/
+
+# Model weight / checkpoint formats, wherever they end up
+*.safetensors
+*.pt
+*.pth
+*.bin

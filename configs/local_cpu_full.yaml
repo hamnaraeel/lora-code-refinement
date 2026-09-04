@@ -1,0 +1,12 @@
+# Full-dataset CPU run on the small code model. Slow (hours on an older laptop)
+# but produces genuine, reportable numbers without a GPU.
+extends: local_cpu_smoke.yaml
+name: qwen05b-cpu-full
+train:
+  num_epochs: 3
+  max_train_samples: null
+  max_eval_samples: null
+  evals_per_epoch: 2
+notes: >-
+  CPU-only reference run on Qwen2.5-Coder-0.5B-Instruct over the full 2,000
+  example training set.

@@ -1,0 +1,6 @@
+# Sweep arm 8 — adapt every linear layer (k/o projections and the MLP) rather
+# than q/v alone. Roughly 3x the trainable parameters at the same rank.
+extends: ../qlora_mistral7b.yaml
+name: sweep-r16-all-linear
+lora: {r: 16, alpha: 32, target_modules: [all-linear]}
+train: {learning_rate: 2.0e-4, num_epochs: 3}

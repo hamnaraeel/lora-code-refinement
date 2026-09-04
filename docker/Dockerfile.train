@@ -1,0 +1,41 @@
+# Training image: CUDA + bitsandbytes for 4-bit QLoRA.
+#
+#   docker build -f docker/Dockerfile.train -t coderefine-train .
+#   docker run --gpus all --rm \
+#     -v "$PWD/Code_Refinement:/app/Code_Refinement:ro" \
+#     -v "$PWD/artifacts:/app/artifacts" \
+#     -v "$PWD/data:/app/data" \
+#     -e WANDB_API_KEY -e HF_TOKEN \
+#     coderefine-train train configs/qlora_mistral7b.yaml
+FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    TOKENIZERS_PARALLELISM=false \
+    HF_HOME=/app/.cache/huggingface
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python3.11 python3.11-dev python3-pip git build-essential \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -sf /usr/bin/python3.11 /usr/local/bin/python
+
+WORKDIR /app
+
+# Dependencies first so a source edit does not invalidate the (slow) pip layer.
+COPY requirements.txt requirements-gpu.txt ./
+RUN python -m pip install --no-cache-dir --upgrade pip \
+    && python -m pip install --no-cache-dir -r requirements.txt \
+    && python -m pip install --no-cache-dir -r requirements-gpu.txt
+
+COPY pyproject.toml README.md ./
+COPY src/ ./src/
+COPY configs/ ./configs/
+COPY scripts/ ./scripts/
+RUN python -m pip install --no-cache-dir -e .
+
+# Mounted at run time: Code_Refinement/ (raw), data/ and artifacts/ (outputs).
+VOLUME ["/app/data", "/app/artifacts", "/app/Code_Refinement"]
+
+ENTRYPOINT ["coderefine"]
+CMD ["--help"]

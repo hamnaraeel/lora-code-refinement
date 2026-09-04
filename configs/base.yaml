@@ -1,0 +1,48 @@
+# Shared defaults. Every other config `extends` this and overrides a few keys,
+# so the diff between two experiments is visible at a glance.
+name: base
+base_model: mistralai/Mistral-7B-Instruct-v0.3
+output_root: artifacts/runs
+data_dir: data/processed
+device: auto
+dtype: auto
+attn_implementation: auto
+tracker: auto          # wandb if WANDB_API_KEY, else mlflow if MLFLOW_TRACKING_URI, else local
+project: lora-code-refinement
+
+lora:
+  # rank 16 / alpha 32 is the starting point justified in the report: alpha = 2r
+  # holds the effective update scale alpha/r constant at 2, so a sweep over rank
+  # measures adapter capacity rather than confounding capacity with step size.
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  bias: none
+  # Attention query/value projections only — the original LoRA paper's setting
+  # and the cheapest configuration that works. The `lora_all_linear` sweep arm
+  # tests whether paying ~3x the parameters for k/o + MLP buys anything.
+  target_modules: [q_proj, v_proj]
+  task_type: CAUSAL_LM
+
+quant:
+  load_in_4bit: false   # turned on by the QLoRA configs; requires CUDA
+  quant_type: nf4
+  compute_dtype: bfloat16
+  double_quant: true
+
+train:
+  learning_rate: 2.0e-4
+  num_epochs: 3
+  per_device_batch_size: 4
+  gradient_accumulation_steps: 4     # effective batch 16
+  max_seq_length: 1024
+  warmup_ratio: 0.03
+  weight_decay: 0.0
+  lr_scheduler: cosine
+  optim: adamw_torch
+  gradient_checkpointing: true
+  evals_per_epoch: 4
+  early_stopping_patience: 3
+  early_stopping_threshold: 1.0e-4
+  max_grad_norm: 0.3
+  seed: 42

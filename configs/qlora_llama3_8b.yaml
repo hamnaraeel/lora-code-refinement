@@ -1,0 +1,11 @@
+# Alternative base model. Same LoRA shape so the two are directly comparable.
+# Requires accepting Meta's licence on the Hub and `huggingface-cli login`.
+extends: base.yaml
+name: qlora-llama3-8b-r16
+base_model: meta-llama/Meta-Llama-3-8B-Instruct
+quant:
+  load_in_4bit: true
+train:
+  per_device_batch_size: 2
+  gradient_accumulation_steps: 8
+notes: Swap-in for the Mistral run; identical LoRA and optimiser settings.

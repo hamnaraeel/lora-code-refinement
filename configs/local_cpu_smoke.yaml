@@ -1,0 +1,25 @@
+# End-to-end smoke run that completes on a CPU-only laptop in minutes.
+#
+# Purpose is correctness, not capability: it exercises the exact code path the
+# GPU run uses — chat templating, completion-only loss masking, checkpointing,
+# early stopping, tracking, adapter export — on a model small enough to train
+# without a GPU. Numbers from this config are not the project's headline
+# results and are labelled as such wherever they appear.
+extends: base.yaml
+name: smoke-qwen05b
+base_model: Qwen/Qwen2.5-Coder-0.5B-Instruct
+device: cpu
+dtype: float32
+quant:
+  load_in_4bit: false
+train:
+  learning_rate: 2.0e-4
+  num_epochs: 1
+  per_device_batch_size: 1
+  gradient_accumulation_steps: 8
+  max_seq_length: 768
+  gradient_checkpointing: false   # pure overhead when memory is not the constraint
+  evals_per_epoch: 4
+  max_train_samples: 64
+  max_eval_samples: 16
+notes: CPU smoke test. Verifies the pipeline, not the model.

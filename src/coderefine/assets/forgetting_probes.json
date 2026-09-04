@@ -1,0 +1,391 @@
+{
+  "description": "Bundled general-capability probe suite for catastrophic-forgetting analysis. Items are original, written for this project; they are not copied from ARC, HellaSwag, MMLU or any other benchmark, so there is no contamination risk from the base model having trained on them, and no licence question. The multiple-choice half is scored by length-normalised log-likelihood over the answer options (no generation, fully deterministic, the same protocol lm-evaluation-harness uses). The instruction-following half is generated and checked by rule, which is what actually detects the most common fine-tuning regression: a model that has learned to always emit a fenced code block.",
+  "multiple_choice": [
+    {
+      "id": "mc-01",
+      "question": "If you drop a glass on a tile floor, what is most likely to happen?",
+      "choices": [
+        "It will bounce back to your hand",
+        "It will shatter",
+        "It will float",
+        "It will turn into sand"
+      ],
+      "answer": 1,
+      "domain": "commonsense"
+    },
+    {
+      "id": "mc-02",
+      "question": "Water boils at 100 degrees Celsius at sea level. At the top of a tall mountain, water boils at:",
+      "choices": [
+        "A higher temperature",
+        "The same temperature",
+        "A lower temperature",
+        "It cannot boil"
+      ],
+      "answer": 2,
+      "domain": "science"
+    },
+    {
+      "id": "mc-03",
+      "question": "A train leaves at 2:00 PM and arrives at 5:30 PM. How long was the journey?",
+      "choices": [
+        "2 hours 30 minutes",
+        "3 hours",
+        "3 hours 30 minutes",
+        "4 hours 30 minutes"
+      ],
+      "answer": 2,
+      "domain": "arithmetic"
+    },
+    {
+      "id": "mc-04",
+      "question": "Why do people wear coats in winter?",
+      "choices": [
+        "To stay cool",
+        "To retain body heat",
+        "To become taller",
+        "To see better"
+      ],
+      "answer": 1,
+      "domain": "commonsense"
+    },
+    {
+      "id": "mc-05",
+      "question": "Which of these is a mammal?",
+      "choices": [
+        "Shark",
+        "Crocodile",
+        "Dolphin",
+        "Octopus"
+      ],
+      "answer": 2,
+      "domain": "science"
+    },
+    {
+      "id": "mc-06",
+      "question": "If all roses are flowers and all flowers need water, then roses:",
+      "choices": [
+        "Do not need water",
+        "Need water",
+        "Are not flowers",
+        "Need sunlight only"
+      ],
+      "answer": 1,
+      "domain": "logic"
+    },
+    {
+      "id": "mc-07",
+      "question": "A shop sells pens for $3 each. How much do 7 pens cost?",
+      "choices": [
+        "$10",
+        "$18",
+        "$21",
+        "$24"
+      ],
+      "answer": 2,
+      "domain": "arithmetic"
+    },
+    {
+      "id": "mc-08",
+      "question": "What happens to ice left in a warm room?",
+      "choices": [
+        "It melts",
+        "It freezes harder",
+        "It evaporates instantly",
+        "It becomes heavier"
+      ],
+      "answer": 0,
+      "domain": "science"
+    },
+    {
+      "id": "mc-09",
+      "question": "Which travels faster?",
+      "choices": [
+        "Sound",
+        "Light",
+        "They are equal",
+        "Neither moves"
+      ],
+      "answer": 1,
+      "domain": "science"
+    },
+    {
+      "id": "mc-10",
+      "question": "You put a letter in a mailbox. What are you most likely trying to do?",
+      "choices": [
+        "Recycle it",
+        "Send it to someone",
+        "Keep it safe forever",
+        "Destroy it"
+      ],
+      "answer": 1,
+      "domain": "commonsense"
+    },
+    {
+      "id": "mc-11",
+      "question": "The capital of Japan is:",
+      "choices": [
+        "Osaka",
+        "Kyoto",
+        "Tokyo",
+        "Seoul"
+      ],
+      "answer": 2,
+      "domain": "world_knowledge"
+    },
+    {
+      "id": "mc-12",
+      "question": "If it is raining, the ground outside is most likely:",
+      "choices": [
+        "Dry",
+        "Wet",
+        "On fire",
+        "Frozen solid"
+      ],
+      "answer": 1,
+      "domain": "commonsense"
+    },
+    {
+      "id": "mc-13",
+      "question": "Which number is largest?",
+      "choices": [
+        "0.9",
+        "0.19",
+        "0.099",
+        "0.1009"
+      ],
+      "answer": 0,
+      "domain": "arithmetic"
+    },
+    {
+      "id": "mc-14",
+      "question": "Plants make food using sunlight through a process called:",
+      "choices": [
+        "Respiration",
+        "Photosynthesis",
+        "Digestion",
+        "Condensation"
+      ],
+      "answer": 1,
+      "domain": "science"
+    },
+    {
+      "id": "mc-15",
+      "question": "A person who repairs pipes is called a:",
+      "choices": [
+        "Plumber",
+        "Carpenter",
+        "Electrician",
+        "Mason"
+      ],
+      "answer": 0,
+      "domain": "world_knowledge"
+    },
+    {
+      "id": "mc-16",
+      "question": "If you have 12 apples and give away 5, how many remain?",
+      "choices": [
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "answer": 2,
+      "domain": "arithmetic"
+    },
+    {
+      "id": "mc-17",
+      "question": "Which season typically comes after summer?",
+      "choices": [
+        "Spring",
+        "Autumn",
+        "Winter",
+        "Summer again"
+      ],
+      "answer": 1,
+      "domain": "commonsense"
+    },
+    {
+      "id": "mc-18",
+      "question": "A dictionary is used to look up:",
+      "choices": [
+        "Phone numbers",
+        "Word meanings",
+        "Bus routes",
+        "Recipes"
+      ],
+      "answer": 1,
+      "domain": "commonsense"
+    },
+    {
+      "id": "mc-19",
+      "question": "In programming, a variable is best described as:",
+      "choices": [
+        "A fixed constant",
+        "A named storage location for a value",
+        "A type of loop",
+        "A comment"
+      ],
+      "answer": 1,
+      "domain": "general_code"
+    },
+    {
+      "id": "mc-20",
+      "question": "What does a compiler do?",
+      "choices": [
+        "Runs a program line by line forever",
+        "Translates source code into machine code",
+        "Stores files",
+        "Sends network requests"
+      ],
+      "answer": 1,
+      "domain": "general_code"
+    },
+    {
+      "id": "mc-21",
+      "question": "An array index in most languages such as C, Java and Python starts at:",
+      "choices": [
+        "0",
+        "1",
+        "-1",
+        "It varies randomly"
+      ],
+      "answer": 0,
+      "domain": "general_code"
+    },
+    {
+      "id": "mc-22",
+      "question": "Which data structure follows last-in, first-out ordering?",
+      "choices": [
+        "Queue",
+        "Stack",
+        "Linked list",
+        "Hash map"
+      ],
+      "answer": 1,
+      "domain": "general_code"
+    },
+    {
+      "id": "mc-23",
+      "question": "HTTP status code 404 means:",
+      "choices": [
+        "Server error",
+        "Not found",
+        "Success",
+        "Unauthorized"
+      ],
+      "answer": 1,
+      "domain": "general_code"
+    },
+    {
+      "id": "mc-24",
+      "question": "Sorting a list of n items with an efficient comparison sort takes about:",
+      "choices": [
+        "O(1) time",
+        "O(n log n) time",
+        "O(n!) time",
+        "O(2^n) time"
+      ],
+      "answer": 1,
+      "domain": "general_code"
+    }
+  ],
+  "instruction_following": [
+    {
+      "id": "if-01",
+      "prompt": "Answer with exactly one word. What colour is a clear daytime sky?",
+      "check": "one_word",
+      "arg": null
+    },
+    {
+      "id": "if-02",
+      "prompt": "Reply with only the number, no words. What is 17 plus 25?",
+      "check": "contains",
+      "arg": "42"
+    },
+    {
+      "id": "if-03",
+      "prompt": "Respond with valid JSON only, an object with the key \"answer\" set to the capital of France.",
+      "check": "json_key",
+      "arg": "answer"
+    },
+    {
+      "id": "if-04",
+      "prompt": "List exactly three fruits, one per line, with no numbering and no other text.",
+      "check": "n_lines",
+      "arg": 3
+    },
+    {
+      "id": "if-05",
+      "prompt": "Answer YES or NO only. Is the Earth larger than the Moon?",
+      "check": "yes_no",
+      "arg": "YES"
+    },
+    {
+      "id": "if-06",
+      "prompt": "Write the word 'hello' in all uppercase letters and nothing else.",
+      "check": "contains",
+      "arg": "HELLO"
+    },
+    {
+      "id": "if-07",
+      "prompt": "Reply with a single sentence of fewer than 15 words describing what a bicycle is.",
+      "check": "max_words",
+      "arg": 15
+    },
+    {
+      "id": "if-08",
+      "prompt": "Output only valid JSON: an array containing the numbers 1, 2 and 3.",
+      "check": "json_array",
+      "arg": 3
+    },
+    {
+      "id": "if-09",
+      "prompt": "Answer with exactly one word: what is the opposite of 'hot'?",
+      "check": "one_word",
+      "arg": null
+    },
+    {
+      "id": "if-10",
+      "prompt": "Without using the letter 'e', write a three-word phrase about rain.",
+      "check": "no_letter",
+      "arg": "e"
+    },
+    {
+      "id": "if-11",
+      "prompt": "Reply with only the number. How many days are in a standard week?",
+      "check": "contains",
+      "arg": "7"
+    },
+    {
+      "id": "if-12",
+      "prompt": "Respond with valid JSON only: an object with keys \"name\" and \"age\".",
+      "check": "json_key",
+      "arg": "name"
+    },
+    {
+      "id": "if-13",
+      "prompt": "Answer in exactly two lines: line one says 'first', line two says 'second'.",
+      "check": "n_lines",
+      "arg": 2
+    },
+    {
+      "id": "if-14",
+      "prompt": "Answer YES or NO only. Is water wet?",
+      "check": "yes_no",
+      "arg": "YES"
+    },
+    {
+      "id": "if-15",
+      "prompt": "Name one programming language. Reply with the name only, nothing else.",
+      "check": "one_word",
+      "arg": null
+    },
+    {
+      "id": "if-16",
+      "prompt": "Reply with only the number. What is 8 multiplied by 9?",
+      "check": "contains",
+      "arg": "72"
+    }
+  ]
+}

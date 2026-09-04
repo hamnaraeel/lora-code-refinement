@@ -1,0 +1,5 @@
+# Sweep arm 4 — lower learning rate at the baseline rank.
+extends: ../qlora_mistral7b.yaml
+name: sweep-r16-lr1e4-e3
+lora: {r: 16, alpha: 32}
+train: {learning_rate: 1.0e-4, num_epochs: 3}

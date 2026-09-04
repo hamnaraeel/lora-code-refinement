@@ -1,0 +1,52 @@
+# Serving image for the A/B inference API.
+#
+#   docker build -f docker/Dockerfile.serve -t coderefine-serve .
+#   docker run --gpus all --rm -p 8000:8000 \
+#     -v "$PWD/artifacts/release/adapter:/app/adapter:ro" \
+#     -e BASE_MODEL=mistralai/Mistral-7B-Instruct-v0.3 \
+#     coderefine-serve
+#
+# CPU-only (small model, for a demo without a GPU):
+#   docker run --rm -p 8000:8000 -v "$PWD/artifacts/release/adapter:/app/adapter:ro" \
+#     -e BASE_MODEL=Qwen/Qwen2.5-Coder-0.5B-Instruct -e LOAD_IN_4BIT=0 -e DEVICE=cpu \
+#     coderefine-serve
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    TOKENIZERS_PARALLELISM=false \
+    HF_HOME=/app/.cache/huggingface \
+    BASE_MODEL=mistralai/Mistral-7B-Instruct-v0.3 \
+    ADAPTER=/app/adapter \
+    DEVICE=auto \
+    LOAD_IN_4BIT=1 \
+    PORT=8000
+
+RUN apt-get update && apt-get install -y --no-install-recommends git curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements.txt ./
+RUN python -m pip install --no-cache-dir --upgrade pip \
+    && python -m pip install --no-cache-dir -r requirements.txt
+
+COPY pyproject.toml README.md ./
+COPY src/ ./src/
+RUN python -m pip install --no-cache-dir -e .
+
+# Run as a non-root user; the HF cache must be writable by it.
+RUN useradd -m -u 1000 serve && mkdir -p /app/.cache && chown -R serve:serve /app
+USER serve
+
+EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=180s --retries=3 \
+  CMD curl -fsS "http://localhost:${PORT}/healthz" || exit 1
+
+# exec form via sh so the environment variables above are expanded.
+ENTRYPOINT ["sh", "-c", "exec coderefine serve \
+  --base-model \"$BASE_MODEL\" \
+  $([ -d \"$ADAPTER\" ] && echo --adapter \"$ADAPTER\") \
+  --device \"$DEVICE\" \
+  $([ \"$LOAD_IN_4BIT\" = \"1\" ] && echo --load-in-4bit) \
+  --host 0.0.0.0 --port \"$PORT\""]

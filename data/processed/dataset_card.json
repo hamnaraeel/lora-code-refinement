@@ -1,0 +1,303 @@
+{
+  "task": "code_refinement_from_review_comment",
+  "source": "Microsoft CodeReviewer refinement dumps (ref-train/valid/test.jsonl)",
+  "curation_config": {
+    "min_old_lines": 2,
+    "max_old_lines": 18,
+    "max_changed_lines": 8,
+    "min_comment_chars": 20,
+    "max_comment_chars": 400,
+    "min_ascii_ratio": 0.95,
+    "min_grounding": 0.1,
+    "max_per_repo": 40,
+    "max_per_comment": 3,
+    "languages": [
+      "py",
+      "java",
+      "go",
+      "js",
+      "php",
+      "rb",
+      "c",
+      "cpp",
+      ".cs"
+    ]
+  },
+  "scan_limit_per_file": 250000,
+  "seed": 13,
+  "splits": {
+    "train": {
+      "n": 2000,
+      "languages": {
+        "java": 246,
+        "go": 245,
+        "py": 242,
+        "cpp": 234,
+        "js": 223,
+        ".cs": 215,
+        "php": 207,
+        "rb": 204,
+        "c": 184
+      },
+      "categories": {
+        "simplification": 165,
+        "error_handling": 164,
+        "api_usage": 164,
+        "suggested_edit": 164,
+        "null_check": 164,
+        "other": 163,
+        "naming": 163,
+        "design_question": 162,
+        "typo_or_docs": 150,
+        "style_format": 138,
+        "testing": 126,
+        "logic_bug": 125,
+        "performance": 96,
+        "security": 56
+      },
+      "n_repos": 444,
+      "grounding": {
+        "mean": 0.7918,
+        "median": 0.85,
+        "min": 0.1
+      },
+      "hunk_lines": {
+        "mean": 6.77,
+        "median": 6,
+        "max": 15
+      },
+      "mean_comment_chars": 143.8
+    },
+    "valid": {
+      "n": 250,
+      "languages": {
+        "py": 33,
+        "cpp": 32,
+        "go": 31,
+        "java": 27,
+        "js": 27,
+        "php": 27,
+        "c": 26,
+        "rb": 24,
+        ".cs": 23
+      },
+      "categories": {
+        "other": 25,
+        "suggested_edit": 24,
+        "naming": 23,
+        "simplification": 23,
+        "design_question": 22,
+        "api_usage": 22,
+        "null_check": 21,
+        "error_handling": 18,
+        "testing": 17,
+        "typo_or_docs": 17,
+        "logic_bug": 16,
+        "style_format": 15,
+        "security": 4,
+        "performance": 3
+      },
+      "n_repos": 100,
+      "grounding": {
+        "mean": 0.7834,
+        "median": 0.85,
+        "min": 0.1167
+      },
+      "hunk_lines": {
+        "mean": 6.72,
+        "median": 6,
+        "max": 15
+      },
+      "mean_comment_chars": 135.6
+    },
+    "test": {
+      "n": 250,
+      "languages": {
+        "go": 32,
+        "java": 32,
+        ".cs": 29,
+        "php": 28,
+        "py": 28,
+        "cpp": 28,
+        "js": 27,
+        "c": 24,
+        "rb": 22
+      },
+      "categories": {
+        "api_usage": 25,
+        "simplification": 25,
+        "error_handling": 25,
+        "other": 24,
+        "suggested_edit": 23,
+        "null_check": 22,
+        "design_question": 21,
+        "naming": 20,
+        "testing": 16,
+        "style_format": 16,
+        "typo_or_docs": 15,
+        "logic_bug": 10,
+        "performance": 5,
+        "security": 3
+      },
+      "n_repos": 91,
+      "grounding": {
+        "mean": 0.7898,
+        "median": 0.85,
+        "min": 0.145
+      },
+      "hunk_lines": {
+        "mean": 6.66,
+        "median": 6,
+        "max": 13
+      },
+      "mean_comment_chars": 150.7
+    }
+  },
+  "split_ratio": {
+    "train": 0.8,
+    "valid": 0.1,
+    "test": 0.1
+  },
+  "leakage_checks": {
+    "content_hash_collisions_dropped": {
+      "train": 2,
+      "valid": 0,
+      "test": 0
+    },
+    "dropped_for_repo_overlap": {
+      "valid": 0,
+      "test": 0,
+      "valid_lost_to_test": 1773,
+      "test_lost_to_valid": 1999,
+      "contested_repos": 267
+    },
+    "repo_overlap_train_valid": [],
+    "repo_overlap_train_test": [],
+    "repo_overlap_valid_test": [],
+    "id_overlap_any": []
+  },
+  "funnel": {
+    "train": {
+      "records_read": 150406,
+      "records_kept": 15178,
+      "rejected_by_filter": {
+        "ungrounded_change": 89299,
+        "repo_quota": 30642,
+        "comment_length": 6179,
+        "change_too_large": 5914,
+        "comment_references_outside_context": 3036,
+        "no_actual_change": 145,
+        "empty_side": 9,
+        "hunk_length": 2,
+        "duplicate": 2
+      },
+      "language_distribution": {
+        "java": 2946,
+        "py": 2721,
+        "go": 2504,
+        "js": 1935,
+        "cpp": 1515,
+        ".cs": 1140,
+        "php": 952,
+        "rb": 853,
+        "c": 612
+      },
+      "category_distribution": {
+        "other": 3577,
+        "api_usage": 2763,
+        "design_question": 2135,
+        "suggested_edit": 2070,
+        "naming": 1028,
+        "error_handling": 976,
+        "simplification": 791,
+        "null_check": 776,
+        "style_format": 286,
+        "typo_or_docs": 275,
+        "testing": 198,
+        "logic_bug": 145,
+        "performance": 102,
+        "security": 56
+      }
+    },
+    "valid": {
+      "records_read": 13103,
+      "records_kept": 3827,
+      "rejected_by_filter": {
+        "ungrounded_change": 7597,
+        "comment_length": 514,
+        "change_too_large": 510,
+        "repo_quota": 333,
+        "comment_references_outside_context": 297,
+        "no_actual_change": 24,
+        "hunk_length": 1
+      },
+      "language_distribution": {
+        "py": 857,
+        "go": 846,
+        "java": 564,
+        "cpp": 391,
+        "js": 365,
+        "php": 288,
+        ".cs": 191,
+        "rb": 180,
+        "c": 145
+      },
+      "category_distribution": {
+        "other": 801,
+        "api_usage": 709,
+        "suggested_edit": 579,
+        "design_question": 527,
+        "naming": 304,
+        "error_handling": 234,
+        "simplification": 211,
+        "null_check": 174,
+        "style_format": 88,
+        "testing": 78,
+        "typo_or_docs": 72,
+        "logic_bug": 33,
+        "performance": 13,
+        "security": 4
+      }
+    },
+    "test": {
+      "records_read": 13104,
+      "records_kept": 3843,
+      "rejected_by_filter": {
+        "ungrounded_change": 7564,
+        "comment_length": 574,
+        "change_too_large": 540,
+        "repo_quota": 308,
+        "comment_references_outside_context": 260,
+        "no_actual_change": 14,
+        "empty_side": 1
+      },
+      "language_distribution": {
+        "py": 854,
+        "go": 818,
+        "java": 614,
+        "cpp": 391,
+        "php": 331,
+        "js": 319,
+        ".cs": 201,
+        "rb": 166,
+        "c": 149
+      },
+      "category_distribution": {
+        "other": 878,
+        "api_usage": 696,
+        "suggested_edit": 606,
+        "design_question": 504,
+        "naming": 277,
+        "error_handling": 254,
+        "simplification": 194,
+        "null_check": 169,
+        "style_format": 73,
+        "testing": 68,
+        "typo_or_docs": 67,
+        "logic_bug": 32,
+        "performance": 15,
+        "security": 10
+      }
+    }
+  }
+}

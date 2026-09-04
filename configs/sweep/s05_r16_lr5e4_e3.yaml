@@ -1,0 +1,6 @@
+# Sweep arm 5 — aggressive learning rate. Expected to be the arm that overfits
+# first, which is what makes it a useful data point for the early-stopping story.
+extends: ../qlora_mistral7b.yaml
+name: sweep-r16-lr5e4-e3
+lora: {r: 16, alpha: 32}
+train: {learning_rate: 5.0e-4, num_epochs: 3}

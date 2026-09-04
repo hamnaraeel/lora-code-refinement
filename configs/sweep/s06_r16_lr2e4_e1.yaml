@@ -1,0 +1,6 @@
+# Sweep arm 6 — single epoch. The cheapest arm, and the one most likely to
+# preserve general capability (see the catastrophic-forgetting analysis).
+extends: ../qlora_mistral7b.yaml
+name: sweep-r16-lr2e4-e1
+lora: {r: 16, alpha: 32}
+train: {learning_rate: 2.0e-4, num_epochs: 1}

@@ -1,0 +1,19 @@
+# ---------------------------------------------------------------------------
+# GPU-only extras. Install on a CUDA host *after* requirements.txt:
+#
+#   pip install -r requirements.txt
+#   pip install -r requirements-gpu.txt
+#
+# bitsandbytes provides the 4-bit NF4 quantisation used by QLoRA and has no
+# CPU-only / Intel-macOS build, which is why it lives here rather than in the
+# core requirements.
+# ---------------------------------------------------------------------------
+bitsandbytes>=0.43.1
+flash-attn>=2.6.0; platform_system == "Linux"
+
+# lm-evaluation-harness for the standard-benchmark half of the catastrophic
+# forgetting analysis (the bundled probe suite runs without it).
+lm-eval>=0.4.3
+
+# Production-grade batched serving with runtime LoRA adapters.
+vllm>=0.5.4; platform_system == "Linux"
