@@ -153,9 +153,49 @@ def find_response_template(tokenizer) -> str:
     # Walk back to just after the user content to isolate the assistant header.
     user_end = prefix.rfind("U")
     template = prefix[user_end + 1 :] if user_end != -1 else prefix
-    if not template.strip():
+    # Trailing whitespace in the template (e.g. the space in "[/INST] ") is not
+    # a stable token boundary: SentencePiece merges it into the first token of
+    # whatever follows (real targets start with a code fence, so "[/INST] ```"
+    # tokenizes with that space fused into a "▁```" token, not as a standalone
+    # space token). Matching on that fused token-id sequence then never occurs
+    # in real data, so the collator silently fails to find the response key on
+    # (in practice) every example. Stripping trailing whitespace keeps the
+    # match anchored to the structural token(s) that are always split out on
+    # their own, and lets the fused leading-space+content token land inside
+    # the (correctly loss-visible) completion instead of the template.
+    template = template.rstrip()
+    if not template:
         raise RuntimeError("Empty response template derived from chat template.")
     return template
+
+
+def _check_response_template_coverage(tokenizer, dataset, response_template: str, sample_size: int = 200) -> None:
+    """Fail loudly if the response template's token ids don't actually occur in real examples.
+
+    ``find_response_template`` derives the template from a synthetic probe; a
+    real chat template can still tokenize it differently once real content
+    follows, which is exactly the bug this guards against (see the trailing
+    ` ` note above the caller). Silently masking every token as prompt would
+    otherwise train on data with an empty loss and look like a normal run.
+    """
+    template_ids = tokenizer.encode(response_template, add_special_tokens=False)
+    text_field = "text" if "text" in dataset.column_names else dataset.column_names[0]
+    n = min(sample_size, len(dataset))
+    misses = 0
+    for i in range(n):
+        ids = tokenizer.encode(dataset[i][text_field], add_special_tokens=False)
+        found = any(ids[j : j + len(template_ids)] == template_ids for j in range(len(ids) - len(template_ids) + 1))
+        if not found:
+            misses += 1
+    miss_rate = misses / n
+    print(f"[train] response template coverage: {n - misses}/{n} examples matched ({100 * (1 - miss_rate):.1f}%)")
+    if miss_rate > 0.02:
+        raise RuntimeError(
+            f"Response template {response_template!r} (ids={template_ids}) was not found in "
+            f"{misses}/{n} sampled training examples ({100 * miss_rate:.1f}% miss rate). "
+            "Completion-only loss masking would silently no-op (or near-no-op) on this data — "
+            "refusing to train rather than produce a run with no real learning signal."
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -329,9 +369,11 @@ def run_training(cfg: RunConfig) -> dict:
 
     collator = None
     if use_legacy_collator:
+        response_template = find_response_template(tokenizer)
         collator = DataCollatorForCompletionOnlyLM(
-            response_template=find_response_template(tokenizer), tokenizer=tokenizer
+            response_template=response_template, tokenizer=tokenizer
         )
+        _check_response_template_coverage(tokenizer, train_ds, response_template)
 
     sft_kwargs: dict[str, Any] = dict(
         output_dir=str(run_dir / "checkpoints"),
