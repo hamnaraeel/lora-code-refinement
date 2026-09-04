@@ -254,7 +254,7 @@ def _filter_kwargs(cls, kwargs: dict[str, Any], what: str) -> dict[str, Any]:
     return out
 
 
-def run_training(cfg: RunConfig) -> dict:
+def run_training(cfg: RunConfig, resume: bool = False) -> dict:
     from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
     from transformers import (
         AutoModelForCausalLM,
@@ -317,6 +317,13 @@ def run_training(cfg: RunConfig) -> dict:
 
     # --- model -----------------------------------------------------------
     quant_config = build_quant_config(cfg.quant, dtype, device) if cfg.quant.load_in_4bit else None
+    if quant_config is not None:
+        # build_quant_config uses the hardware-resolved `dtype`, not the YAML
+        # default, for bnb_4bit_compute_dtype — reflect that back onto cfg so
+        # the run summary and report describe what actually ran, not the
+        # unresolved config (see the comment in build_quant_config for why
+        # this can differ from the config default).
+        cfg.quant.compute_dtype = str(dtype).removeprefix("torch.")
     model_kwargs: dict[str, Any] = {
         "torch_dtype": dtype,
         "attn_implementation": resolve_attn(cfg.attn_implementation, device),
@@ -464,8 +471,18 @@ def run_training(cfg: RunConfig) -> dict:
     trainer_kwargs["processing_class" if "processing_class" in trainer_fields else "tokenizer"] = tokenizer
     trainer = SFTTrainer(**trainer_kwargs)
 
+    resume_from_checkpoint = None
+    if resume:
+        from transformers.trainer_utils import get_last_checkpoint
+
+        resume_from_checkpoint = get_last_checkpoint(str(run_dir / "checkpoints"))
+        if resume_from_checkpoint is None:
+            print(f"[train] --resume requested but no checkpoint found under {run_dir / 'checkpoints'}; starting fresh")
+        else:
+            print(f"[train] resuming from {resume_from_checkpoint}")
+
     start = time.time()
-    train_result = trainer.train()
+    train_result = trainer.train(resume_from_checkpoint=resume_from_checkpoint)
     duration = time.time() - start
 
     # --- adapter export --------------------------------------------------

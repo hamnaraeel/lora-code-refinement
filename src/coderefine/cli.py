@@ -94,13 +94,19 @@ def build_benchmark(
 def train(
     config: Path = typer.Argument(..., help="YAML run config."),
     set_: list[str] = typer.Option([], "--set", help="Override, e.g. train.num_epochs=1"),
+    resume: bool = typer.Option(
+        False, "--resume",
+        help="Resume from this run's latest checkpoint (same output_root/name) instead of starting fresh. "
+        "Combine with --set train.num_epochs=N to raise the target — e.g. run once with "
+        "num_epochs=1, then again with --resume --set train.num_epochs=2 to train one more epoch.",
+    ),
 ) -> None:
     """Fine-tune a LoRA adapter."""
     from .config import RunConfig, parse_overrides
     from .train import run_training
 
     cfg = RunConfig.from_yaml(config, parse_overrides(set_))
-    result = run_training(cfg)
+    result = run_training(cfg, resume=resume)
     console.print(json.dumps(result, indent=2, default=str))
 
 

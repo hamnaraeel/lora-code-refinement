@@ -95,10 +95,19 @@ def build_quant_config(quant, dtype: torch.dtype, device: str):
         )
     from transformers import BitsAndBytesConfig
 
+    # bnb_4bit_compute_dtype must track actual hardware support, not the config
+    # file's static default: bfloat16 has no native acceleration on pre-Ampere
+    # GPUs (P100/Pascal has none at all; T4/Turing lacks bf16 tensor cores too,
+    # that started at Ampere/cc8.0). Forcing bf16 there doesn't error — it just
+    # runs the 4-bit dequant+matmul, which happens on every forward AND
+    # backward pass, through an unaccelerated fallback path, making training
+    # steps dramatically slower than eval (forward-only) steps. `dtype` here
+    # already went through resolve_dtype()'s torch.cuda.is_bf16_supported()
+    # check, so reuse it instead of reading quant.compute_dtype from the YAML.
     return BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type=quant.quant_type,
-        bnb_4bit_compute_dtype=getattr(torch, quant.compute_dtype),
+        bnb_4bit_compute_dtype=dtype,
         bnb_4bit_use_double_quant=quant.double_quant,
     )
 
